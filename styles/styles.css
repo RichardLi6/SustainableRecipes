@@ -86,8 +86,34 @@ a:active {}
 
 .navbar-custom {
 	background-color: #b8d5cd;
-
 }
+
+/* Index
+--------------------------------------------- */
+#image-container {
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+
+
+#image-container img {
+    width: 150%;
+    display: block;
+    margin: 0 auto;
+    height: auto;
+}
+
+.text-center {
+    width: 90vw;
+    margin: 20px auto;
+    color: #42b26f;
+}
+
+#index-page {
+    font-family: "work sans", sans-serif;
+}
+
 
 /* Main
 --------------------------------------------- */
