@@ -4,9 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* Add your styles here */
-    </style>
     <!-- Bootstrap Library CSS CDN go here -->
     <link rel="stylesheet" href="./styles/styles.css">
     <!-- body - font-family: Rubik, sans-serif -->
@@ -14,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik:wght@300&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
 
 
@@ -37,7 +36,7 @@
     <script src="./scripts/script.js"></script>
 </head>
 
-<body>
+<body id="main-body">
     <nav class="navbar nabvar-expand-md navbar-custom">
         <div class="container-fluid">
             <a href="../main.html">
@@ -51,9 +50,13 @@
     </nav>
 
     <form id="ingredientsForm">
-    <h2 id = "headerIngredients"> <p>What ingredients do you have? </p></h2>
+        <h2 id="headerIngredients">
+            <p>What ingredients do you have? </p>
+        </h2>
         <div class="category" id="dairy">
-            <h3><p>Dairy</p></h3>
+            <h3>
+                <p>Dairy</p>
+            </h3>
             <label class="container">
                 <input type="checkbox" name="dairy[]" value="Milk">
                 <span class="checkmark"> Milk </span>
@@ -77,7 +80,9 @@
         </div>
 
         <div class="category" id="meat">
-            <h3> <p> Meat </p></h3>
+            <h3>
+                <p> Meat </p>
+            </h3>
             <label class="container">
                 <input type="checkbox" name="meat[]" value="Beef">
                 <span class="checkmark"> Beef </span>
@@ -109,7 +114,9 @@
         </div>
 
         <div class="category" id="vegetable">
-            <h3><p>Vegetables</p></h3>
+            <h3>
+                <p>Vegetables</p>
+            </h3>
             <label class="container">
                 <input type="checkbox" name="vegetable[]" value="Red Pepper">
                 <span class="checkmark"> Red Pepper </span>
@@ -139,10 +146,12 @@
                 <span class="checkmark"> Potatoes </span>
             </label>
         </div>
-        <button type="button" id="seeAllRecipesButton" onclick="seeAllRecipes()"><p>See all Recipes</p></button>
-    </form>    
-        
-    
+        <button type="button" id="seeAllRecipesButton" onclick="seeAllRecipes()">
+            <p>See all Recipes</p>
+        </button>
+    </form>
+
+
 
     <script>
         function seeAllRecipes() {
