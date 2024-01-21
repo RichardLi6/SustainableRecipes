@@ -88,7 +88,94 @@ a:active {}
 
 /* Main
 --------------------------------------------- */
+#headerIngredients {
+    display: flex;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    justify-content: center;
+}
+
+
+h3 p{
+    text-align: center;
+    color: black;
+    font-size: 25px;
+    margin: 0px;
+    padding-top: 5px;
+}
+
+#ingredientsForm{width: 250px; height: 38px; margin: 0px auto;}
+div label input {margin-right: 100px;}
+
+#dairy, #meat, #vegetable{
+    background-color: #91dac5;
+    border-radius: 4px;
+    border: 10px solid #fff;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+#meat label,
+#vegetable label,
+#dairy label {
+    float: left;
+    line-height: 3.0em;
+    width: 8.0em;
+    height: 3.0em;
+}
+.container span {
+    text-align: center;
+    display: block;
+    border: 1px solid #fff;
+    border-color: #91dac5 ;
+    border-radius: 50%
+}
+
+
+#meat input,
+#vegetable input,
+#dairy input {
+    position: absolute;
+    display: none;
+    color: #fff !important;
+}
+
+#vegetable label input + span{color: #fff;}
+#dairy label input + span{color: #fff;}
+#meat label input + span{color: #fff;}
+
+input:checked + span {
+    color: #ffffff;
+    text-shadow: 0 0  6px rgba(0, 0, 0, 0.8);
+}
+
+.container input:checked + span{background-color: black;} 
 
 
 /* Footer
 --------------------------------------------- */
+#seeAllRecipesButton {
+    background-color: #dc3545;
+    border-radius: 15px;
+    border: 1px solid #fff;
+    display: flex;
+    justify-content: center;
+    width: 250px;
+    height: 38px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+#seeAllRecipesButton p{
+    color: white;
+    text-align: center;
+    font-size: large;
+
+}
