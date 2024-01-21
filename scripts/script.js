@@ -14,7 +14,7 @@ var firebaseConfig = {
 // initialize the Firebase app
 // initialize Firestore database if using it
 //--------------------------------------------
-const app = firebase.initializeApp(firebaseConfig);
+// const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const admin = require('firebase-admin'); // Use 'admin' for server-side operations
