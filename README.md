@@ -39,6 +39,7 @@ What we'd like to build in the future:
 	
 ## 7. Contents of Folder
 Content of the project folder:
+```
 .
 ├── README.md
 ├── data.json
@@ -64,3 +65,5 @@ Content of the project folder:
 │   ├── nav_after.html
 │   └── nav_before.html
 └── top.html
+```
+
