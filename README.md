@@ -18,7 +18,7 @@ List technologies (with version numbers), API's, icons, fonts, images, media or 
 * Font awesome
 * TheMeadDB.com (API)
 
-## 4. Complete setup/installion/usage
+## 4. Complete setup/installation/usage
 Here are the steps how to use our app:
 * Step1: Login or sign in.
 * Step2: Select ingredients you have on hand the list provided and click 'See all Recipes' to proceed.
