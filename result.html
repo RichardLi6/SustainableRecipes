@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+
+<body>
+    <h2>Results Page</h2>
+
+    <div id="resultsContainer">
+        <!-- Results will be displayed here dynamically -->
+    </div>
+
+    <script>
+        // Retrieve selected ingredients from localStorage
+        const selectedIngredients = JSON.parse(localStorage.getItem('selectedIngredients'));
+
+        // Load recipes from your local JSON file (adjust the path accordingly)
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Filter recipes based on the selected ingredients
+                const matchingRecipes = data.filter(recipe =>
+                    selectedIngredients.length < 3
+                        ? selectedIngredients.every(ingredient => recipe.strIngredient1 === ingredient || recipe.strIngredient2 === ingredient || recipe.strIngredient3 === ingredient || recipe.strIngredient4 === ingredient || recipe.strIngredient5 === ingredient || recipe.strIngredient6 === ingredient || recipe.strIngredient7 === ingredient || recipe.strIngredient8 === ingredient || recipe.strIngredient9 === ingredient || recipe.strIngredient10 === ingredient || recipe.strIngredient11 === ingredient || recipe.strIngredient12 === ingredient || recipe.strIngredient13 === ingredient || recipe.strIngredient14 === ingredient || recipe.strIngredient15 === ingredient || recipe.strIngredient16 === ingredient || recipe.strIngredient17 === ingredient || recipe.strIngredient18 === ingredient || recipe.strIngredient19 === ingredient || recipe.strIngredient20 === ingredient)
+                        : selectedIngredients.filter(ingredient =>
+                            recipe.strIngredient1 === ingredient || recipe.strIngredient2 === ingredient || recipe.strIngredient3 === ingredient || recipe.strIngredient4 === ingredient || recipe.strIngredient5 === ingredient || recipe.strIngredient6 === ingredient || recipe.strIngredient7 === ingredient || recipe.strIngredient8 === ingredient || recipe.strIngredient9 === ingredient || recipe.strIngredient10 === ingredient || recipe.strIngredient11 === ingredient || recipe.strIngredient12 === ingredient || recipe.strIngredient13 === ingredient || recipe.strIngredient14 === ingredient || recipe.strIngredient15 === ingredient || recipe.strIngredient16 === ingredient || recipe.strIngredient17 === ingredient || recipe.strIngredient18 === ingredient || recipe.strIngredient19 === ingredient || recipe.strIngredient20 === ingredient).length >= 3
+                );
+
+                // Display the matching recipes
+                const resultsContainer = document.getElementById('resultsContainer');
+                if (matchingRecipes.length > 0) {
+                    matchingRecipes.forEach(recipe => {
+                        const recipeContainer = document.createElement('div');
+
+                        // Display recipe information
+                        const recipeName = document.createElement('h3');
+                        recipeName.textContent = recipe.strMeal;
+                        recipeContainer.appendChild(recipeName);
+
+                        const ingredientsList = document.createElement('ul');
+                        for (let i = 1; i <= 20; i++) {
+                            const ingredient = recipe[`strIngredient${i}`];
+                            const measurement = recipe[`strMeasure${i}`];
+
+                            if (ingredient && measurement) {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = `${measurement} ${ingredient}`;
+                                ingredientsList.appendChild(listItem);
+                            }
+                        }
+                        recipeContainer.appendChild(ingredientsList);
+
+                        const instructions = document.createElement('p');
+                        instructions.textContent = recipe.strInstructions;
+                        recipeContainer.appendChild(instructions);
+
+                        const youtubeLink = document.createElement('a');
+                        youtubeLink.href = recipe.strYoutube;
+                        youtubeLink.textContent = 'Watch on YouTube';
+                        recipeContainer.appendChild(youtubeLink);
+
+                        resultsContainer.appendChild(recipeContainer);
+                    });
+                } else {
+                    const noResultsMessage = document.createElement('p');
+                    noResultsMessage.textContent = 'No matching recipes found.';
+                    resultsContainer.appendChild(noResultsMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading data.json:', error);
+            });
+    </script>
+</body>
+
+</html>
