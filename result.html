@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Add your styles here */
+        .recipe-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            max-width: 300px;
+        }
+
+        .recipe-img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
@@ -27,45 +38,51 @@
                 // Filter recipes based on the selected ingredients
                 const matchingRecipes = data.filter(recipe =>
                     selectedIngredients.length < 3
-                        ? selectedIngredients.every(ingredient => recipe.strIngredient1 === ingredient || recipe.strIngredient2 === ingredient || recipe.strIngredient3 === ingredient || recipe.strIngredient4 === ingredient || recipe.strIngredient5 === ingredient || recipe.strIngredient6 === ingredient || recipe.strIngredient7 === ingredient || recipe.strIngredient8 === ingredient || recipe.strIngredient9 === ingredient || recipe.strIngredient10 === ingredient || recipe.strIngredient11 === ingredient || recipe.strIngredient12 === ingredient || recipe.strIngredient13 === ingredient || recipe.strIngredient14 === ingredient || recipe.strIngredient15 === ingredient || recipe.strIngredient16 === ingredient || recipe.strIngredient17 === ingredient || recipe.strIngredient18 === ingredient || recipe.strIngredient19 === ingredient || recipe.strIngredient20 === ingredient)
+                        ? selectedIngredients.every(ingredient => recipe[`strIngredient1`] === ingredient || recipe[`strIngredient2`] === ingredient || recipe[`strIngredient3`] === ingredient || recipe[`strIngredient4`] === ingredient || recipe[`strIngredient5`] === ingredient || recipe[`strIngredient6`] === ingredient || recipe[`strIngredient7`] === ingredient || recipe[`strIngredient8`] === ingredient || recipe[`strIngredient9`] === ingredient || recipe[`strIngredient10`] === ingredient || recipe[`strIngredient11`] === ingredient || recipe[`strIngredient12`] === ingredient || recipe[`strIngredient13`] === ingredient || recipe[`strIngredient14`] === ingredient || recipe[`strIngredient15`] === ingredient || recipe[`strIngredient16`] === ingredient || recipe[`strIngredient17`] === ingredient || recipe[`strIngredient18`] === ingredient || recipe[`strIngredient19`] === ingredient || recipe[`strIngredient20`] === ingredient)
                         : selectedIngredients.filter(ingredient =>
-                            recipe.strIngredient1 === ingredient || recipe.strIngredient2 === ingredient || recipe.strIngredient3 === ingredient || recipe.strIngredient4 === ingredient || recipe.strIngredient5 === ingredient || recipe.strIngredient6 === ingredient || recipe.strIngredient7 === ingredient || recipe.strIngredient8 === ingredient || recipe.strIngredient9 === ingredient || recipe.strIngredient10 === ingredient || recipe.strIngredient11 === ingredient || recipe.strIngredient12 === ingredient || recipe.strIngredient13 === ingredient || recipe.strIngredient14 === ingredient || recipe.strIngredient15 === ingredient || recipe.strIngredient16 === ingredient || recipe.strIngredient17 === ingredient || recipe.strIngredient18 === ingredient || recipe.strIngredient19 === ingredient || recipe.strIngredient20 === ingredient).length >= 3
+                            recipe[`strIngredient1`] === ingredient || recipe[`strIngredient2`] === ingredient || recipe[`strIngredient3`] === ingredient || recipe[`strIngredient4`] === ingredient || recipe[`strIngredient5`] === ingredient || recipe[`strIngredient6`] === ingredient || recipe[`strIngredient7`] === ingredient || recipe[`strIngredient8`] === ingredient || recipe[`strIngredient9`] === ingredient || recipe[`strIngredient10`] === ingredient || recipe[`strIngredient11`] === ingredient || recipe[`strIngredient12`] === ingredient || recipe[`strIngredient13`] === ingredient || recipe[`strIngredient14`] === ingredient || recipe[`strIngredient15`] === ingredient || recipe[`strIngredient16`] === ingredient || recipe[`strIngredient17`] === ingredient || recipe[`strIngredient18`] === ingredient || recipe[`strIngredient19`] === ingredient || recipe[`strIngredient20`] === ingredient).length >= 3
                 );
 
                 // Display the matching recipes
                 const resultsContainer = document.getElementById('resultsContainer');
                 if (matchingRecipes.length > 0) {
                     matchingRecipes.forEach(recipe => {
-                        const recipeContainer = document.createElement('div');
+                        const recipeCard = document.createElement('div');
+                        recipeCard.classList.add('recipe-card');
 
                         // Display recipe information
+                        const recipeImg = document.createElement('img');
+                        recipeImg.classList.add('recipe-img');
+                        recipeImg.src = recipe.strMealThumb;
+                        recipeImg.alt = recipe.strMeal;
+                        recipeCard.appendChild(recipeImg);
+
                         const recipeName = document.createElement('h3');
                         recipeName.textContent = recipe.strMeal;
-                        recipeContainer.appendChild(recipeName);
+                        recipeCard.appendChild(recipeName);
 
-                        const ingredientsList = document.createElement('ul');
-                        for (let i = 1; i <= 20; i++) {
-                            const ingredient = recipe[`strIngredient${i}`];
-                            const measurement = recipe[`strMeasure${i}`];
+                        const category = document.createElement('p');
+                        category.textContent = `Category: ${recipe.strCategory}`;
+                        recipeCard.appendChild(category);
 
-                            if (ingredient && measurement) {
-                                const listItem = document.createElement('li');
-                                listItem.textContent = `${measurement} ${ingredient}`;
-                                ingredientsList.appendChild(listItem);
-                            }
-                        }
-                        recipeContainer.appendChild(ingredientsList);
+                        const area = document.createElement('p');
+                        area.textContent = `Area: ${recipe.strArea}`;
+                        recipeCard.appendChild(area);
 
-                        const instructions = document.createElement('p');
-                        instructions.textContent = recipe.strInstructions;
-                        recipeContainer.appendChild(instructions);
+                        const ingredientsList = document.createElement('p');
+                        ingredientsList.textContent = `Ingredients: ${getIngredientsList(recipe)}`;
+                        recipeCard.appendChild(ingredientsList);
 
-                        const youtubeLink = document.createElement('a');
-                        youtubeLink.href = recipe.strYoutube;
-                        youtubeLink.textContent = 'Watch on YouTube';
-                        recipeContainer.appendChild(youtubeLink);
+                        const detailsButton = document.createElement('button');
+                        detailsButton.textContent = 'Show Details';
+                        detailsButton.addEventListener('click', function () {
+                            // Redirect to 'detail.html' and pass the recipe ID as a query parameter
+                            const url = `detail.html?id=${recipe.idMeal}`;
+                            window.location.href = url;
+                        });
+                        recipeCard.appendChild(detailsButton);
 
-                        resultsContainer.appendChild(recipeContainer);
+                        resultsContainer.appendChild(recipeCard);
                     });
                 } else {
                     const noResultsMessage = document.createElement('p');
@@ -76,6 +93,20 @@
             .catch(error => {
                 console.error('Error loading data.json:', error);
             });
+
+        // Function to get a comma-separated list of ingredients
+        function getIngredientsList(recipe) {
+            const ingredients = [];
+            for (let i = 1; i <= 20; i++) {
+                const ingredient = recipe[`strIngredient${i}`];
+                const measurement = recipe[`strMeasure${i}`];
+
+                if (ingredient && measurement) {
+                    ingredients.push(`${measurement} ${ingredient}`);
+                }
+            }
+            return ingredients.join(', ');
+        }
     </script>
 </body>
 
