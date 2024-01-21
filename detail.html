@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+
+<body>
+    <h2>Recipe Details</h2>
+
+    <div id="recipeDetailsContainer">
+        <!-- Recipe details will be displayed here dynamically -->
+    </div>
+
+    <script>
+        // Retrieve recipe ID from query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const recipeId = urlParams.get('id');
+
+        // Load recipes from your local JSON file (adjust the path accordingly)
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Find the recipe with the matching ID
+                const selectedRecipe = data.find(recipe => recipe.idMeal === recipeId);
+
+                // Display the recipe details
+                const recipeDetailsContainer = document.getElementById('recipeDetailsContainer');
+                if (selectedRecipe) {
+                    // Display detailed information
+                    const recipeImg = document.createElement('img');
+                    recipeImg.src = selectedRecipe.strMealThumb;
+                    recipeImg.alt = selectedRecipe.strMeal;
+                    recipeDetailsContainer.appendChild(recipeImg);
+
+                    const recipeName = document.createElement('h3');
+                    recipeName.textContent = selectedRecipe.strMeal;
+                    recipeDetailsContainer.appendChild(recipeName);
+
+                    const category = document.createElement('p');
+                    category.textContent = `Category: ${selectedRecipe.strCategory}`;
+                    recipeDetailsContainer.appendChild(category);
+
+                    const area = document.createElement('p');
+                    area.textContent = `Area: ${selectedRecipe.strArea}`;
+                    recipeDetailsContainer.appendChild(area);
+
+                    const ingredientsList = document.createElement('p');
+                    ingredientsList.textContent = `Ingredients: ${getIngredientsList(selectedRecipe)}`;
+                    recipeDetailsContainer.appendChild(ingredientsList);
+
+                    const instructions = document.createElement('p');
+                    instructions.textContent = `Instructions: ${selectedRecipe.strInstructions}`;
+                    recipeDetailsContainer.appendChild(instructions);
+
+                    const youtubeEmbed = document.createElement('iframe');
+                    youtubeEmbed.width = '560';
+                    youtubeEmbed.height = '315';
+                    youtubeEmbed.src = `https://www.youtube.com/embed/${getYouTubeVideoId(selectedRecipe.strYoutube)}`;
+                    youtubeEmbed.allowFullscreen = true;
+                    recipeDetailsContainer.appendChild(youtubeEmbed);
+                } else {
+                    const noDetailsMessage = document.createElement('p');
+                    noDetailsMessage.textContent = 'Recipe details not found.';
+                    recipeDetailsContainer.appendChild(noDetailsMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading data.json:', error);
+            });
+
+        // Function to get a comma-separated list of ingredients
+        function getIngredientsList(recipe) {
+            const ingredients = [];
+            for (let i = 1; i <= 20; i++) {
+                const ingredient = recipe[`strIngredient${i}`];
+                const measurement = recipe[`strMeasure${i}`];
+
+                if (ingredient && measurement) {
+                    ingredients.push(`${measurement} ${ingredient}`);
+                }
+            }
+            return ingredients.join(', ');
+        }
+
+        // Function to extract YouTube video ID from the full URL
+        function getYouTubeVideoId(youtubeUrl) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = youtubeUrl.match(regex);
+            return match ? match[1] : '';
+        }
+    </script>
+</body>
+
+</html>
