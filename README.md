@@ -16,6 +16,7 @@ List technologies (with version numbers), API's, icons, fonts, images, media or 
 * Bootstrap 5.0 (Frontend library)
 * Firebase 8.0 (BAAS - Backend as a Service)
 * Font awesome
+* TheMeadDB.com (API)
 
 ## 4. Complete setup/installion/usage
 Here are the steps how to use our app:
