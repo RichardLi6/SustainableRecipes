@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 100 Ingredients</title>
+</head>
+
+<body>
+
+    <div id="topIngredients"></div>
+
+    <script>
+        // Assuming this code is included in an HTML file and running in a browser environment
+        const url = 'data.json';
+
+        // Fetch data from the JSON file
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(recipes => {
+                // Combine all ingredients from all recipes into one array
+                const allIngredients = recipes.flatMap(recipe => {
+                    return Object.keys(recipe)
+                        .filter(key => key.startsWith('strIngredient'))
+                        .map(ingredientKey => recipe[ingredientKey].trim())
+                        .filter(Boolean); // Remove empty strings
+                });
+
+                // Count the occurrences of each ingredient
+                const ingredientCounts = {};
+                allIngredients.forEach(ingredient => {
+                    ingredientCounts[ingredient] = (ingredientCounts[ingredient] || 0) + 1;
+                });
+
+                // Sort ingredients by frequency and take the top 50
+                const topIngredients = Object.entries(ingredientCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 100)
+                    .map(entry => entry[0]);
+
+                // Display the result on the HTML page
+                const topIngredientsContainer = document.getElementById('topIngredients');
+                topIngredientsContainer.innerHTML = `<h2>Top 50 Ingredients:</h2><ul>${topIngredients.map(ingredient => `<li>${ingredient}</li>`).join('')}</ul>`;
+            })
+            .catch(error => console.error('Error loading or parsing data:', error));
+    </script>
+
+</body>
+
+</html>
