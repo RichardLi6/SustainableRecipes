@@ -6,11 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Add your styles here */
-        .navbar-custom {
-	        background-color: #b8d5cd;
-        }
     </style>
-    <script src="https://kit.fontawesome.com/f35c321b59.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap Library CSS CDN go here -->
+    <link rel="stylesheet" href="./styles/styles.css">
+    <!-- body - font-family: Rubik, sans-serif -->
+    <!-- head - font-family: Rubik Mono One, sans-serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik:wght@300&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+    <!-- Bootstrap Library JS CDN  go here -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="./scripts/firebaseAPI_SustainableRecipes.js"></script>
+
+    <script src="./scripts/script.js"></script>
 </head>
 
 <body>
@@ -25,7 +51,7 @@
             </a>
         </div>
     </nav>
-    <h2>Recipe Details</h2>
+    <h2 id="recipe-detail">Recipe Details</h2>
 
     <div id="recipeDetailsContainer">
         <!-- Recipe details will be displayed here dynamically -->
@@ -40,6 +66,9 @@
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
+                // Assume recipeId is defined elsewhere in your script
+                // const recipeId = 'some-id';
+
                 // Find the recipe with the matching ID
                 const selectedRecipe = data.find(recipe => recipe.idMeal === recipeId);
 
@@ -52,32 +81,40 @@
                     recipeImg.alt = selectedRecipe.strMeal;
                     recipeDetailsContainer.appendChild(recipeImg);
 
+                    // Create a div to wrap all text elements
+                    const textContainer = document.createElement('div');
+
                     const recipeName = document.createElement('h3');
                     recipeName.textContent = selectedRecipe.strMeal;
-                    recipeDetailsContainer.appendChild(recipeName);
+                    textContainer.appendChild(recipeName);
 
                     const category = document.createElement('p');
                     category.textContent = `Category: ${selectedRecipe.strCategory}`;
-                    recipeDetailsContainer.appendChild(category);
+                    textContainer.appendChild(category);
 
                     const area = document.createElement('p');
                     area.textContent = `Area: ${selectedRecipe.strArea}`;
-                    recipeDetailsContainer.appendChild(area);
+                    textContainer.appendChild(area);
 
                     const ingredientsList = document.createElement('p');
                     ingredientsList.textContent = `Ingredients: ${getIngredientsList(selectedRecipe)}`;
-                    recipeDetailsContainer.appendChild(ingredientsList);
+                    textContainer.appendChild(ingredientsList);
 
-                    const instructions = document.createElement('p');
-                    instructions.textContent = `Instructions: ${selectedRecipe.strInstructions}`;
-                    recipeDetailsContainer.appendChild(instructions);
-
+                    // YouTube video embed
                     const youtubeEmbed = document.createElement('iframe');
                     youtubeEmbed.width = '560';
                     youtubeEmbed.height = '315';
                     youtubeEmbed.src = `https://www.youtube.com/embed/${getYouTubeVideoId(selectedRecipe.strYoutube)}`;
                     youtubeEmbed.allowFullscreen = true;
-                    recipeDetailsContainer.appendChild(youtubeEmbed);
+                    textContainer.appendChild(youtubeEmbed);
+
+                    // Instructions text
+                    const instructions = document.createElement('p');
+                    instructions.textContent = `Instructions: ${selectedRecipe.strInstructions}`;
+                    textContainer.appendChild(instructions);
+
+                    // Append the text container with all elements
+                    recipeDetailsContainer.appendChild(textContainer);
                 } else {
                     const noDetailsMessage = document.createElement('p');
                     noDetailsMessage.textContent = 'Recipe details not found.';

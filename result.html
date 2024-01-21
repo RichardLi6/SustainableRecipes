@@ -6,23 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Add your styles here */
-        .recipe-card {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px;
-            max-width: 300px;
-        }
-
-        .recipe-img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .navbar-custom {
-	        background-color: #b8d5cd;
-        }
-
     </style>
+    <!-- Bootstrap Library CSS CDN go here -->
+    <link rel="stylesheet" href="./styles/styles.css">
+    <!-- body - font-family: Rubik, sans-serif -->
+    <!-- head - font-family: Rubik Mono One, sans-serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik:wght@300&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+    <!-- Bootstrap Library JS CDN  go here -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="./scripts/firebaseAPI_SustainableRecipes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+
+    <script src="./scripts/script.js"></script>
 </head>
 
 <body>
@@ -37,7 +52,7 @@
             </a>
         </div>
     </nav>
-    <h2>Results Page</h2>
+    <h2 id="">Results Page</h2>
 
     <div id="resultsContainer">
         <!-- Results will be displayed here dynamically -->
@@ -47,17 +62,50 @@
         // Retrieve selected ingredients from localStorage
         const selectedIngredients = JSON.parse(localStorage.getItem('selectedIngredients'));
 
-        // Load recipes from your local JSON file (adjust the path accordingly)
+        // Load recipes from your local JSON file
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                // Filter recipes based on the selected ingredients
-                const matchingRecipes = data.filter(recipe =>
-                    selectedIngredients.length < 3
-                        ? selectedIngredients.every(ingredient => recipe[`strIngredient1`] === ingredient || recipe[`strIngredient2`] === ingredient || recipe[`strIngredient3`] === ingredient || recipe[`strIngredient4`] === ingredient || recipe[`strIngredient5`] === ingredient || recipe[`strIngredient6`] === ingredient || recipe[`strIngredient7`] === ingredient || recipe[`strIngredient8`] === ingredient || recipe[`strIngredient9`] === ingredient || recipe[`strIngredient10`] === ingredient || recipe[`strIngredient11`] === ingredient || recipe[`strIngredient12`] === ingredient || recipe[`strIngredient13`] === ingredient || recipe[`strIngredient14`] === ingredient || recipe[`strIngredient15`] === ingredient || recipe[`strIngredient16`] === ingredient || recipe[`strIngredient17`] === ingredient || recipe[`strIngredient18`] === ingredient || recipe[`strIngredient19`] === ingredient || recipe[`strIngredient20`] === ingredient)
-                        : selectedIngredients.filter(ingredient =>
-                            recipe[`strIngredient1`] === ingredient || recipe[`strIngredient2`] === ingredient || recipe[`strIngredient3`] === ingredient || recipe[`strIngredient4`] === ingredient || recipe[`strIngredient5`] === ingredient || recipe[`strIngredient6`] === ingredient || recipe[`strIngredient7`] === ingredient || recipe[`strIngredient8`] === ingredient || recipe[`strIngredient9`] === ingredient || recipe[`strIngredient10`] === ingredient || recipe[`strIngredient11`] === ingredient || recipe[`strIngredient12`] === ingredient || recipe[`strIngredient13`] === ingredient || recipe[`strIngredient14`] === ingredient || recipe[`strIngredient15`] === ingredient || recipe[`strIngredient16`] === ingredient || recipe[`strIngredient17`] === ingredient || recipe[`strIngredient18`] === ingredient || recipe[`strIngredient19`] === ingredient || recipe[`strIngredient20`] === ingredient).length >= 3
-                );
+                // Prepare data for Fuse.js by flattening ingredient fields
+                const flattenedData = data.map(recipe => {
+                    const ingredients = [];
+                    for (let i = 1; i <= 20; i++) {
+                        if (recipe[`strIngredient${i}`]) {
+                            ingredients.push(recipe[`strIngredient${i}`].toLowerCase());
+                        }
+                    }
+                    return { ...recipe, ingredients };
+                });
+
+                // Initialize Fuse.js
+                const fuse = new Fuse(flattenedData, {
+                    keys: ['ingredients'],
+                    threshold: 0.3 // Adjust for fuzziness
+                });
+
+                // Filter recipes using Fuse.js
+                let matchingRecipes = [];
+                if (selectedIngredients.length <= 3) {
+                    selectedIngredients.forEach(ingredient => {
+                        matchingRecipes = matchingRecipes.concat(
+                            fuse.search(ingredient.toLowerCase()).map(result => result.item)
+                        );
+                    });
+                } else {
+                    // Count matching recipes for each ingredient
+                    let counts = {};
+                    selectedIngredients.forEach(ingredient => {
+                        fuse.search(ingredient.toLowerCase()).forEach(result => {
+                            counts[result.item.idMeal] = (counts[result.item.idMeal] || 0) + 1;
+                        });
+                    });
+
+                    // Filter recipes that match at least 3 ingredients
+                    matchingRecipes = flattenedData.filter(recipe => counts[recipe.idMeal] >= 3);
+                }
+
+                // Remove duplicate recipes from the results
+                matchingRecipes = matchingRecipes.filter((v, i, a) => a.findIndex(t => (t.idMeal === v.idMeal)) === i);
 
                 // Display the matching recipes
                 const resultsContainer = document.getElementById('resultsContainer');
@@ -66,29 +114,38 @@
                         const recipeCard = document.createElement('div');
                         recipeCard.classList.add('recipe-card');
 
-                        // Display recipe information
+                        // Display recipe image
                         const recipeImg = document.createElement('img');
                         recipeImg.classList.add('recipe-img');
                         recipeImg.src = recipe.strMealThumb;
                         recipeImg.alt = recipe.strMeal;
                         recipeCard.appendChild(recipeImg);
 
+                        // Container for the text elements
+                        const recipeText = document.createElement('div');
+                        recipeText.className = 'recipe-text';
+
+                        // Recipe name
                         const recipeName = document.createElement('h3');
                         recipeName.textContent = recipe.strMeal;
-                        recipeCard.appendChild(recipeName);
+                        recipeText.appendChild(recipeName);
 
+                        // Recipe category
                         const category = document.createElement('p');
                         category.textContent = `Category: ${recipe.strCategory}`;
-                        recipeCard.appendChild(category);
+                        recipeText.appendChild(category);
 
+                        // Recipe area
                         const area = document.createElement('p');
                         area.textContent = `Area: ${recipe.strArea}`;
-                        recipeCard.appendChild(area);
+                        recipeText.appendChild(area);
 
+                        // Ingredients list
                         const ingredientsList = document.createElement('p');
                         ingredientsList.textContent = `Ingredients: ${getIngredientsList(recipe)}`;
-                        recipeCard.appendChild(ingredientsList);
+                        recipeText.appendChild(ingredientsList);
 
+                        // Details button
                         const detailsButton = document.createElement('button');
                         detailsButton.textContent = 'Show Details';
                         detailsButton.addEventListener('click', function () {
@@ -96,9 +153,14 @@
                             const url = `detail.html?id=${recipe.idMeal}`;
                             window.location.href = url;
                         });
-                        recipeCard.appendChild(detailsButton);
+                        recipeText.appendChild(detailsButton);
 
+                        // Append the text container to the recipe card
+                        recipeCard.appendChild(recipeText);
+
+                        // Append the recipe card to the results container
                         resultsContainer.appendChild(recipeCard);
+
                     });
                 } else {
                     const noResultsMessage = document.createElement('p');
